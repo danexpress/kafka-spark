@@ -3,6 +3,7 @@ import time
 import random
 import uuid
 from importlib.metadata import metadata
+import threading
 
 from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient, NewTopic
@@ -78,9 +79,7 @@ def delivery_report(err, msg):
         print(f"Message delivered to {msg.topic()} successfully produced")
 
 
-if __name__ == "__main__":
-    create_topic(TOPIC_NAME)
-
+def produce_transaction(thread_id):
     while True:
         transaction = generate_transaction()
 
@@ -91,7 +90,28 @@ if __name__ == "__main__":
                 value=json.dumps(transaction).encode("utf-8"),
                 on_delivery=delivery_report,
             )
-            print(f"Produced transacition: {transaction}")
+            print(f"Thread {thread_id} - Produced transacition: {transaction}")
             producer.flush()
         except Exception as e:
             print(f"Error sending transaction: {e}")
+
+
+def producer_data_in_parallel(num_threads):
+    threads = []
+    try:
+        for i in range(num_threads):
+            thread = threading.Thread(target=produce_transaction, args=(i,))
+            thread.daemon = True
+            thread.start()
+            threads.append(thread)
+
+        for thread in threads:
+            thread.join()
+    except Exception as e:
+        print(f"Error starting threads: {e}")
+
+
+if __name__ == "__main__":
+    create_topic(TOPIC_NAME)
+
+    producer_data_in_parallel(3)
