@@ -107,6 +107,7 @@ ENV/
 /mnt
 /mnt/spark-checkpoints
 /mnt/spark-state
+/mnt/checkpoints
 
 # mypy
 .mypy_cache/
