@@ -53,6 +53,7 @@ coverage.xml
 *.mo
 *.pot
 
+
 # Django stuff:
 *.log
 local_settings.py
@@ -103,6 +104,9 @@ ENV/
 
 # mkdocs documentation
 /site
+/mnt
+/mnt/spark-checkpoints
+/mnt/spark-state
 
 # mypy
 .mypy_cache/
