@@ -1,0 +1,226 @@
+{
+    "version": "1.4.0",
+    "project": {
+        "name": "javaproducer",
+        "directory": "/Users/fredoffei/Documents/javakafka/javaproducer",
+        "workspaceDir": "/Users/fredoffei/Documents/javakafka/javaproducer",
+        "sources": [
+            "/Users/fredoffei/Documents/javakafka/javaproducer/src/main/java"
+        ],
+        "dependencies": [
+            
+        ],
+        "classpath": [
+            "/Users/fredoffei/Documents/javakafka/javaproducer/target/classes",
+            "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2.jar",
+            "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar",
+            "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.2/jackson-core-2.15.2.jar",
+            "/Users/fredoffei/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar",
+            "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar",
+            "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar",
+            "/Users/fredoffei/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar"
+        ],
+        "out": "/Users/fredoffei/Documents/javakafka/javaproducer/target",
+        "classesDir": "/Users/fredoffei/Documents/javakafka/javaproducer/target/classes",
+        "resources": [
+            "/Users/fredoffei/Documents/javakafka/javaproducer/src/main/resources"
+        ],
+        "java": {
+            "options": [
+                "-g",
+                "-target",
+                "17",
+                "-source",
+                "17",
+                "-encoding",
+                "UTF-8"
+            ]
+        },
+        "test": {
+            "frameworks": [
+                {
+                    "names": [
+                        "com.novocode.junit.JUnitFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.scalatest.tools.Framework",
+                        "org.scalatest.tools.ScalaTestFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.scalacheck.ScalaCheckFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.specs.runner.SpecsFramework",
+                        "org.specs2.runner.Specs2Framework",
+                        "org.specs2.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "utest.runner.Framework"
+                    ]
+                },
+                {
+                    "names": [
+                        "munit.Framework"
+                    ]
+                }
+            ],
+            "options": {
+                "excludes": [
+                    
+                ],
+                "arguments": [
+                    {
+                        "args": [
+                            "-v",
+                            "-a"
+                        ],
+                        "framework": {
+                            "names": [
+                                "com.novocode.junit.JUnitFramework"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "platform": {
+            "name": "jvm",
+            "config": {
+                "home": "/Users/fredoffei/Library/Caches/Coursier/arc/https/github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.17%252B10/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.17_10.tar.gz/jdk-17.0.17+10/Contents/Home",
+                "options": [
+                    
+                ]
+            },
+            "mainClass": [
+                
+            ]
+        },
+        "resolution": {
+            "modules": [
+                {
+                    "organization": "org.projectlombok",
+                    "name": "lombok",
+                    "version": "1.18.30",
+                    "artifacts": [
+                        {
+                            "name": "lombok",
+                            "path": "/Users/fredoffei/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar"
+                        },
+                        {
+                            "name": "lombok",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.slf4j",
+                    "name": "slf4j-api",
+                    "version": "2.0.9",
+                    "artifacts": [
+                        {
+                            "name": "slf4j-api",
+                            "path": "/Users/fredoffei/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar"
+                        },
+                        {
+                            "name": "slf4j-api",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "com.fasterxml.jackson.core",
+                    "name": "jackson-core",
+                    "version": "2.15.2",
+                    "artifacts": [
+                        {
+                            "name": "jackson-core",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.2/jackson-core-2.15.2.jar"
+                        },
+                        {
+                            "name": "jackson-core",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.2/jackson-core-2.15.2-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "com.fasterxml.jackson.core",
+                    "name": "jackson-databind",
+                    "version": "2.15.2",
+                    "artifacts": [
+                        {
+                            "name": "jackson-databind",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2.jar"
+                        },
+                        {
+                            "name": "jackson-databind",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "ch.qos.logback",
+                    "name": "logback-classic",
+                    "version": "1.4.11",
+                    "artifacts": [
+                        {
+                            "name": "logback-classic",
+                            "path": "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar"
+                        },
+                        {
+                            "name": "logback-classic",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "com.fasterxml.jackson.core",
+                    "name": "jackson-annotations",
+                    "version": "2.15.2",
+                    "artifacts": [
+                        {
+                            "name": "jackson-annotations",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar"
+                        },
+                        {
+                            "name": "jackson-annotations",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "ch.qos.logback",
+                    "name": "logback-core",
+                    "version": "1.4.11",
+                    "artifacts": [
+                        {
+                            "name": "logback-core",
+                            "path": "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar"
+                        },
+                        {
+                            "name": "logback-core",
+                            "classifier": "sources",
+                            "path": "/Users/fredoffei/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11-sources.jar"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tags": [
+            "library"
+        ]
+    }
+}
