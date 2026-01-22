@@ -1,3 +1,4 @@
+from itertools import count
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import (
@@ -72,24 +73,9 @@ transaction_df = transaction_df.withColumn(
 transaction_df = transaction_df.withWatermark("transactionTime", "10 minutes")
 
 # Aggregate by merchant and time window
-aggregated_df = (
-    transaction_df.groupBy(
-        col("merchantId"), window(col("transactionTime"), "5 minutes")
-    )
-    .agg(
-        sum("amount").alias("total_amount"),
-        count("*").alias("transaction_count"),
-        avg("amount").alias("avg_amount"),
-    )
-    .select(
-        col("merchantId"),
-        col("window.start").alias("window_start"),
-        col("window.end").alias("window_end"),
-        col("total_amount"),
-        col("transaction_count"),
-        col("avg_amount"),
-    )
-)
+aggregated_df = transaction_df.groupBy(
+    col("merchantId"), window(col("transactionTime"), "5 minutes")
+).agg(sum("amount").alias("total_amount"), count("*").alias("transaction_count"))
 
 # Write aggregations to Kafka
 aggregation_query = (
@@ -99,11 +85,8 @@ aggregation_query = (
         to_json(
             struct(
                 col("merchantId"),
-                col("window_start"),
-                col("window_end"),
                 col("total_amount"),
                 col("transaction_count"),
-                col("avg_amount"),
             )
         ),
     )
@@ -114,16 +97,5 @@ aggregation_query = (
     .option("checkpointLocation", f"{CHECKPOINT_LOCATION}/aggregates")
     .outputMode("update")
     .start()
+    .awaitTermination()
 )
-
-# Console output for monitoring
-console_query = (
-    transaction_df.writeStream.outputMode("append")
-    .format("console")
-    .option("truncate", "false")
-    .option("numRows", 10)
-    .start()
-)
-
-# Await termination
-aggregation_query.awaitTermination()
