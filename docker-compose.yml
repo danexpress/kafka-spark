@@ -135,7 +135,7 @@ services:
     image: confluentinc/cp-schema-registry:7.5.1
     container_name: schema-registry
     ports:
-      - "8082:8081"  # CHANGED: External port 8082, internal 8081
+      - "8082:8081" 
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-broker-1:19092,kafka-broker-2:19092,kafka-broker-3:19092
@@ -215,6 +215,28 @@ services:
       - SPARK_NO_DAEMONIZE=true
       - SPARK_WORKER_CORES=2
       - SPARK_WORKER_MEMORY=2g
+
+  # monitoring
+  prometheus:
+    image: prom/prometheus:v3.0.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+    networks:
+      - fred
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    ports:
+      - "59093:59093"
+    networks:
+      - fred
 
 volumes:
   controller_data_1:
