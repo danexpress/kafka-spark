@@ -393,6 +393,47 @@ services:
     networks:
       - fred
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.12.2
+    user: root
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./controller-logs-1:/opt/kafka/controller-logs-1:ro
+      - ./controller-logs-2:/opt/kafka/controller-logs-2:ro
+      - ./controller-logs-3:/opt/kafka/controller-logs-3:ro
+      - ./broker-logs-1:/opt/kafka/broker-logs-1:ro
+      - ./broker-logs-2:/opt/kafka/broker-logs-2:ro
+      - ./broker-logs-3:/opt/kafka/broker-logs-3:ro
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+    networks:
+      - fred
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.1
+    container_name: ls-container
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./monitoring/elk/logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logs/controller-logs-1:/opt/kafka/controller-logs-1:ro
+      - ./logs/controller-logs-2:/opt/kafka/controller-logs-2:ro
+      - ./logs/controller-logs-3:/opt/kafka/controller-logs-3:ro
+      - ./logs/broker-logs-1:/opt/kafka/broker-logs-1:ro
+      - ./logs/broker-logs-2:/opt/kafka/broker-logs-2:ro
+      - ./logs/broker-logs-3:/opt/kafka/broker-logs-3:ro
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      - KAFKA_BOOTSTRAP_SERVERS=kafka-broker-1:19092,kafka-broker-2:19092,kafka-broker-3:19092
+    networks:
+      - fred
+    depends_on:
+      - elasticsearch
+
 volumes:
   grafana-data:
   
