@@ -11,9 +11,9 @@ from pyspark.sql.types import (
 )
 
 # Configuration
-KAFKA_BROKERS = "kafka-broker-1:19092,kafka-broker-2:19092,kafka-broker-3:19092"  # Fixed: Use internal Docker network addresses
-SOURCE_TOPIC = "financial-transactions"  # Fixed: Match your Java producer topic name
-AGGREGATED_TOPIC = "transaction-aggregates"  # Fixed: Use hyphens consistently
+KAFKA_BROKERS = "kafka-broker-1:19092,kafka-broker-2:19092,kafka-broker-3:19092"  
+SOURCE_TOPIC = "financial-transactions"  
+AGGREGATED_TOPIC = "transaction-aggregates"  
 ANOMALIES_TOPIC = "transaction-anomalies"
 CHECKPOINT_LOCATION = "/mnt/spark-checkpoints"
 STATE_DIR = "/mnt/spark-state"
@@ -32,11 +32,11 @@ spark.sparkContext.setLogLevel("WARN")
 # Define schema - Fixed: Added missing comma and corrected field names
 transaction_schema = StructType(
     [
-        StructField("transactionId", StringType(), True),  # Match Java producer
+        StructField("transactionId", StringType(), True),  
         StructField("userId", StringType(), True),
         StructField("merchantId", StringType(), True),
         StructField("amount", DoubleType(), True),
-        StructField("transactionTime", LongType(), True),  # Fixed: Added missing comma
+        StructField("transactionTime", LongType(), True),  
         StructField("transactionType", StringType(), True),
         StructField("location", StringType(), True),
         StructField("paymentMethod", StringType(), True),
