@@ -1,195 +1,255 @@
-# Distributed Streaming & Analytics Platform (Kafka + Spark + ELK + Prometheus)
+# FinStream 🚀
+### Real-Time Financial Transaction Pipeline with Distributed Kafka, Spark & Full-Stack Observability
 
-## 📌 Overview
-This project is a fully containerized, end-to-end real-time data streaming and analytics platform built using 
-Docker Compose. It deploys a production-grade ecosystem consisting of:
-
-- **Kafka KRaft Cluster** (3 controllers + 3 brokers)
-- **Spark Cluster** (1 master + 3 workers)
-- **Schema Registry**
-- **Redpanda Console** for easy topic inspection
-- **Prometheus + Alertmanager + Grafana** for metrics and cluster observability
-- **ELK Stack** (Elasticsearch, Logstash, Kibana + Filebeat) for centralized log analytics
-
-This platform is designed for:
-- Real-time data processing
-- Stream ingestion pipelines
-- End-to-end observability (metrics + logs)
-- Testing distributed data systems locally
-- Prototyping streaming architectures before cloud deployment
-
----
-
-## 🚀 Features
-
-### **🔥 Kafka KRaft Cluster**
-- Multi-controller quorum (3 nodes)
-- Multi-broker architecture (3 brokers)
-- Exposes internal + host listeners
-- JMX metrics enabled via Prometheus Java Agent
-- Persistent data volumes for durability
-
-### **⚡ Spark Compute Cluster**
-- Spark Master + 3 workers
-- Volume-mounted Spark job directory
-- Supports batch and streaming jobs
-- Built for local development with production-style behavior
-
-### **📜 Schema Registry**
-- Centralized Avro schema storage
-- Ensures serialization consistency across producers/consumers
-
-### **📊 Redpanda Console**
-- GUI for inspecting topics, partitions, consumers, offsets, and schemas
-
-### **📈 Observability Stack**
-**Prometheus**
-- Scrapes Kafka JMX metrics
-- Integrated with Spark and system-level monitoring
-
-**Grafana**
-- Custom dashboards for Kafka cluster health
-- Spark executor and driver metrics
-- System performance visualization
-
-### **🪵 ELK Logging Stack**
-- Filebeat ships logs → Logstash → Elasticsearch → Kibana dashboards
-- Centralized cluster log analytics
-- Useful for troubleshooting brokers, controllers, and Spark jobs
-
----
-
-## 🛠 Architecture Diagram
-
-Kafka Controllers (1,2,3) ---> Kafka Brokers (1,2,3) ---> Schema Registry
-| |
-| +--> Redpanda Console
-Prometheus <------+
-Grafana <---------+
-
-  Filebeat --> Logstash --> Elasticsearch --> Kibana
-
-  Spark Master --> Spark Workers (1,2,3)
 
 
 ---
 
-## 📦 Project Structure
+## Overview
 
+**FinStream** is a production-grade, containerized distributed streaming platform that ingests, processes, and monitors high-throughput financial transaction events in real time. Built to address visibility and reliability gaps common in event-driven financial systems, it delivers low-latency analytics, fault-tolerant ingestion, and end-to-end observability across a fully distributed workload.
 
-
-├─ jobs/ # Spark job scripts
-├─ mnt/ # Spark state + checkpoints
-├─ volumes/ # Kafka broker + controller storage
-├─ logs/ # Kafka log directories
-├─ monitoring/
-│ ├─ prometheus/ # Prometheus config
-│ ├─ grafana/ # Dashboards + provisioning
-│ ├─ elk/
-│ ├─ filebeat/ # Filebeat configuration
-│ ├─ logstash/ # Logstash pipelines
-├─ docker-compose.yml # Full platform orchestration
-
+The system simulates a realistic financial transaction stream — purchases, refunds, multi-currency events across merchants and geographies — and processes them continuously through a hardened Kafka KRaft cluster into Spark Streaming, with every layer monitored via ELK and Prometheus.
 
 ---
 
-## ▶️ Getting Started
+## Architecture
 
-### **1. Install Requirements**
-- Docker  
-- Docker Compose  
-- 16GB RAM recommended  
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        FinStream Architecture                        │
+└─────────────────────────────────────────────────────────────────────┘
 
-### **2. Start the Cluster**
+  Python Producers (3 threads)
+         │
+         │  financial_transactions topic
+         ▼
+┌─────────────────────────────────────┐
+│     Kafka KRaft Cluster             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐  │
+│  │ Broker 1 │ │ Broker 2 │ │ Broker 3 │  │
+│  │ :29092   │ │ :39092   │ │ :49092   │  │
+│  └──────────┘ └──────────┘ └──────────┘  │
+│   5 Partitions │ Replication Factor: 3   │
+└───────────────────┬─────────────────────┘
+                    │
+                    ▼
+         ┌──────────────────┐
+         │  Spark Streaming  │
+         │  (spark-master +  │
+         │   spark-workers)  │
+         └────────┬─────────┘
+                  │
+        ┌─────────┴──────────┐
+        ▼                    ▼
+  ┌───────────┐      ┌───────────────┐
+  │ Analytics │      │  ELK Stack    │
+  │  Output   │      │ Elasticsearch │
+  │           │      │  Logstash     │
+  └───────────┘      │  Kibana       │
+                     └───────────────┘
+                            │
+                     ┌──────▼──────┐
+                     │ Prometheus  │
+                     │  + Grafana  │
+                     └─────────────┘
+```
 
+---
 
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Event Streaming** | Apache Kafka (KRaft mode — no ZooKeeper) |
+| **Stream Processing** | Apache Spark Structured Streaming 3.5 |
+| **Producers** | Python/Java + confluent-kafka (multi-threaded) |
+| **Log Aggregation** | Elasticsearch + Logstash/Filebeat + Kibana (ELK) |
+| **Metrics & Alerting** | Prometheus + Grafana |
+| **Containerization** | Docker + Docker Compose |
+
+---
+
+## Key Features
+
+**Kafka KRaft Cluster (No ZooKeeper)**
+Three-broker KRaft cluster with multi-controller quorum, eliminating ZooKeeper dependency for simplified operations and improved fault tolerance. Each topic is configured with 5 partitions and replication factor 3 to guarantee data durability and horizontal scalability.
+
+**Multi-Threaded Python and Java Producer**
+Generates synthetic financial transaction events — purchases, refunds, multi-currency, international flags — across 3 parallel threads. Producer is tuned for throughput with batching, gzip compression, and buffered sends to minimize latency under load.
+
+**Spark Structured Streaming**
+Consumes directly from Kafka and applies real-time transformations — deserialization, enrichment, windowed aggregations — submitted via `spark-submit` to a standalone Spark master with distributed workers.
+
+**Full-Stack Observability**
+Every layer is instrumented. ELK captures structured logs from producers, brokers, and Spark jobs. Prometheus scrapes Kafka JMX metrics and broker health. Grafana dashboards surface consumer lag, throughput, and partition leadership in real time.
+
+**Fault-Tolerant Design**
+With replication factor 3, the cluster tolerates broker failure without data loss or consumer disruption. Producer `acks=1` balances durability with throughput, appropriate for high-frequency transaction streams.
+
+---
+
+## Project Structure
+
+```
+finstream/
+├── docker-compose.yml           # Full stack orchestration
+├── producers/
+│   └── transaction_producer.py  # Multi-threaded Kafka producer
+├── spark/
+│   └── jobs/
+│       └── spark_processor.py   # Spark Structured Streaming job
+├── elk/
+│   ├── logstash/
+│   │   └── pipeline.conf        # Logstash pipeline config
+│   └── Filebeat/
+│       └── dashboards/          # Pre-built Kibana dashboards
+├── monitoring/
+│   ├── prometheus.yml           # Prometheus scrape config
+│   └── grafana/
+│       └── dashboards/          # Grafana dashboard definitions
+├── config/
+│   └── kafka/
+│       └── broker.properties    # Broker configuration
+└── README.md
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Python 3.10+
+- 16GB RAM recommended for full stack
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/finstream.git](https://github.com/danexpress/kafka-spark
+cd kafka-spark
+```
+
+### 2. Start the full stack
+
+```bash
 docker-compose up -d
+```
 
+This spins up all services: 3 Kafka brokers (KRaft), Spark master + workers, Elasticsearch, Logstash, Kibana, Prometheus, and Grafana.
 
-### **3. Check Running Containers**
+### 3. Verify Kafka brokers are healthy
 
+```bash
+docker exec -it kafka-broker-1 kafka-topics.sh \
+  --bootstrap-server localhost:29092 \
+  --list
+```
 
-docker ps
+### 4. Run the producer
 
+```bash
+pip install confluent-kafka
+python main.py
+```
 
----
+The producer will auto-create the `financial_transactions` topic if it doesn't exist, then begin streaming events across 3 parallel threads.
 
-## 🧪 Testing the Platform
+### 5. Submit the Spark job
 
-### **Create a Kafka topic**
+```bash
+docker exec -it spark-master /opt/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
+  /opt/spark/jobs/spark_processor.py
+```
 
+### 6. Access dashboards
 
-docker exec -it kafka-broker-1 kafka-topics
---create --topic test-events
---partitions 3
---replication-factor 3
---bootstrap-server kafka-broker-1:19092
-
-
-### **Produce events**
-
-
-docker exec -it kafka-broker-1 kafka-console-producer
---topic test-events
---bootstrap-server kafka-broker-1:19092
-
-
-### **Consume events**
-
-
-docker exec -it kafka-broker-1 kafka-console-consumer
---topic test-events
---from-beginning
---bootstrap-server kafka-broker-1:19092
-
-
----
-
-## 📊 Observability Access
-
-| Tool | URL |
-|------|-----|
-| Grafana | http://localhost:3000 |
-| Prometheus | http://localhost:9090 |
-| Kibana | http://localhost:5601 |
-| Redpanda Console | http://localhost:8080 |
-| Schema Registry | http://localhost:8082 |
+| Service | URL | Credentials |
+|---|---|---|
+| Redpanda | http://localhost:8080 | — |
+| Grafana | http://localhost:3000 | admin / admin |
+| Prometheus | http://localhost:9090 | — |
+| Spark UI | http://localhost:4040 | — |
 
 ---
 
-## 🧰 Troubleshooting
+## Kafka Configuration
 
-### **Broker not ready?**
-Wait for controllers to elect a quorum:
-
-
-docker logs kafka-controller-1
-
-
-### **Prometheus not scraping metrics?**
-Ensure JMX exporter volumes are correctly mounted.
-
-### **Elasticsearch memory errors?**
-Increase Docker resources or set:
-
-
-ES_JAVA_OPTS="-Xms512m -Xmx512m"
-
+| Parameter | Value | Rationale |
+|---|---|---|
+| Brokers | 3 (KRaft) | Multi-controller quorum, no ZooKeeper |
+| Partitions | 5 | Parallel consumer throughput |
+| Replication Factor | 3 | Full broker failure tolerance |
+| `acks` | 1 | Throughput-optimized acknowledgment |
+| `compression.type` | gzip | Reduced network I/O at scale |
+| `batch.num.messages` | 1000 | Batched sends for efficiency |
+| `linger.ms` | 10 | Slight delay to maximize batch size |
 
 ---
 
-## 📌 Future Enhancements
-- Add Kafka Connect for external integrations  
-- Add Spark Structured Streaming examples  
-- Add dbt-on-Spark transformations  
-- Add Airflow DAGs for orchestration  
+## Transaction Schema
+
+Each event produced to the `financial_transactions` topic follows this schema:
+
+```json
+{
+  "transaction_id": "uuid-v4",
+  "user_id": "user_42",
+  "amount": 87432.50,
+  "transactionTime": 1709251200,
+  "merchantID": "merchant_2",
+  "transactionType": "purchase",
+  "location": "location_17",
+  "paymentMethod": "credit_card",
+  "isInternational": true,
+  "currency": "CAD"
+}
+```
 
 ---
 
-## 🙌 Contributions
-PRs, improvements, and ideas are welcome!
+## Observability
+
+**ELK Stack**
+Logstash ingests structured logs from producers and Spark workers, parsing and indexing them into Elasticsearch. Kibana provides searchable log exploration and pre-built dashboards for transaction volume, error rates, and consumer lag.
+
+**Prometheus + Grafana**
+Kafka JMX metrics are scraped by Prometheus and visualized in Grafana. Key metrics monitored include broker throughput (bytes in/out), consumer group lag, partition leadership distribution, and under-replicated partition count — the primary signal for cluster health degradation.
 
 ---
 
-## 📄 License
-MIT License
+## Design Decisions & Tradeoffs
+
+**Why KRaft over ZooKeeper?**
+ZooKeeper introduces an additional distributed system to operate, monitor, and scale independently of Kafka. KRaft consolidates metadata management into the broker quorum itself, reducing operational overhead and removing a common failure point. As of Kafka 3.3+, KRaft is production-ready and the direction the ecosystem is moving.
+
+**Why `acks=1` instead of `acks=all`?**
+For a high-frequency synthetic transaction stream, `acks=1` provides the right balance — the leader acknowledges the write without waiting for all replica confirmations. For a real production financial system handling actual settlements, `acks=all` with `min.insync.replicas=2` would be the correct choice to prevent any data loss.
+
+**Why gzip compression?**
+Financial transaction payloads are JSON with repetitive field names and predictable value ranges — highly compressible. Gzip trades a small amount of CPU for significant network I/O reduction, which matters at high throughput across multiple brokers.
+
+---
+
+## Future Improvements
+
+- Add a dead letter queue (DLQ) topic for malformed or unprocessable events
+- Implement consumer group lag alerting in Prometheus with Grafana alert rules
+- Add schema registry (Confluent or Apicurio) to enforce Avro schema evolution
+- Extend Spark job with fraud detection model inference using MLflow-registered model
+- Add Kafka Connect sink to persist processed events to Iceberg/DuckDB for historical analytics
+
+---
+
+## Related Projects
+
+- **[ChurnGuard](#)** — Production-grade churn prediction pipeline with Airflow, MLflow, and PostgreSQL
+
+---
+
+## License
+
+MIT License. See `LICENSE` for details.
