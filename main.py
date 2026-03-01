@@ -68,7 +68,7 @@ def generate_transaction():
         location=f"location_{random.randint(1, 50)}",
         paymentMethod=random.choice(["credit_card", "paypal", "bank_transfer"]),
         isInternational=random.choice([True, False]),
-        currency=random.choice(["USD", "EUR", "GBP"]),
+        currency=random.choice(["USD", "CAD", "GBP"]),
     )
 
 
